@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#C2185B">
+<meta name="description" content="Aura Wigs — Custom wigs, made to order. Try before you buy.">
+<meta property="og:title" content="Aura Wigs">
+<meta property="og:description" content="Custom wigs, made to order. Try before you buy.">
+<title>Aura Wigs</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  :root {
+    --rose: #C2185B;
+    --rose-dark: #880E4F;
+    --rose-light: #F8BBD0;
+    --gold: #D4AF37;
+    --bg: #FFF8F9;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B6B7B;
+    --border: #F0D0DB;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+  body { display: flex; flex-direction: column; max-width: 430px; margin: 0 auto; position: relative; }
+
+  /* ── screens ── */
+  .screen { display: none; flex-direction: column; flex: 1; min-height: calc(100vh - 64px); padding-bottom: 80px; }
+  .screen.active { display: flex; }
+
+  /* ── bottom nav ── */
+  nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: var(--card); border-top: 1px solid var(--border); display: flex; z-index: 100; height: 64px; }
+  nav button { flex: 1; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--muted); font-size: 10px; font-weight: 500; letter-spacing: 0.03em; transition: color 0.2s; padding: 8px 0; }
+  nav button.active { color: var(--rose); }
+  nav button svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── home screen ── */
+  .hero { background: linear-gradient(160deg, #880E4F 0%, #C2185B 60%, #E91E8C 100%); color: #fff; padding: 48px 24px 36px; position: relative; overflow: hidden; }
+  .hero::after { content: ''; position: absolute; bottom: -30px; right: -20px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.07); }
+  .hero::before { content: ''; position: absolute; top: -20px; left: 60%; width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+  .hero-tag { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.75; margin-bottom: 10px; }
+  .hero h1 { font-size: 36px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 10px; }
+  .hero h1 span { color: var(--gold); }
+  .hero p { font-size: 14px; opacity: 0.85; line-height: 1.5; max-width: 260px; }
+  .hero-btns { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-primary { background: #fff; color: var(--rose); border: none; border-radius: 50px; padding: 12px 22px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: 0.02em; }
+  .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.6); border-radius: 50px; padding: 12px 22px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+  .section-title { font-size: 18px; font-weight: 700; padding: 24px 20px 12px; letter-spacing: -0.01em; }
+  .section-title span { color: var(--rose); }
+
+  /* ── category pills ── */
+  .pills { display: flex; gap: 8px; padding: 0 20px 4px; overflow-x: auto; scrollbar-width: none; }
+  .pills::-webkit-scrollbar { display: none; }
+  .pill { background: var(--card); border: 1.5px solid var(--border); border-radius: 50px; padding: 7px 16px; font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer; color: var(--muted); transition: all 0.2s; flex-shrink: 0; }
+  .pill.active, .pill:hover { background: var(--rose); border-color: var(--rose); color: #fff; }
+
+  /* ── featured horizontal scroll ── */
+  .featured-scroll { display: flex; gap: 14px; padding: 8px 20px 4px; overflow-x: auto; scrollbar-width: none; }
+  .featured-scroll::-webkit-scrollbar { display: none; }
+  .feat-card { flex-shrink: 0; width: 160px; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; cursor: pointer; }
+  .feat-img { width: 160px; height: 180px; object-fit: cover; background: var(--rose-light); display: flex; align-items: center; justify-content: center; font-size: 48px; }
+  .feat-info { padding: 10px 12px; }
+  .feat-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .feat-price { font-size: 14px; font-weight: 700; color: var(--rose); }
+  .feat-type { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+
+  /* ── how it works ── */
+  .how { padding: 8px 20px 24px; }
+  .how-steps { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  .how-step { display: flex; align-items: flex-start; gap: 14px; background: var(--card); border-radius: var(--radius-sm); padding: 14px; border: 1px solid var(--border); }
+  .step-num { width: 32px; height: 32px; background: var(--rose); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .step-text strong { font-size: 13px; font-weight: 700; display: block; margin-bottom: 2px; }
+  .step-text span { font-size: 12px; color: var(--muted); }
+
+  /* ── catalog screen ── */
+  .catalog-header { background: var(--rose); color: #fff; padding: 28px 20px 20px; }
+  .catalog-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .catalog-header p { font-size: 13px; opacity: 0.85; }
+  .search-bar { margin: 16px 20px 0; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+  .search-bar input { background: none; border: none; outline: none; color: #fff; font-size: 14px; flex: 1; }
+  .search-bar input::placeholder { color: rgba(255,255,255,0.65); }
+  .search-bar svg { width: 16px; height: 16px; stroke: rgba(255,255,255,0.75); fill: none; stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px 16px; }
+  .wig-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: transform 0.15s; }
+  .wig-card:active { transform: scale(0.97); }
+  .wig-emoji { width: 100%; height: 150px; background: var(--rose-light); display: flex; align-items: center; justify-content: center; font-size: 54px; position: relative; }
+  .wig-badge { position: absolute; top: 8px; right: 8px; background: var(--gold); color: #5a3e00; font-size: 10px; font-weight: 700; border-radius: 50px; padding: 3px 8px; letter-spacing: 0.04em; }
+  .wig-info { padding: 10px 12px 12px; }
+  .wig-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .wig-type { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .wig-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .wig-price { font-size: 15px; font-weight: 700; color: var(--rose); }
+  .try-btn { background: var(--rose-light); color: var(--rose-dark); border: none; border-radius: 50px; padding: 5px 10px; font-size: 10px; font-weight: 700; cursor: pointer; }
+
+  /* ── tryon screen ── */
+  .tryon-header { background: var(--rose); color: #fff; padding: 28px 20px 20px; }
+  .tryon-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .tryon-header p { font-size: 13px; opacity: 0.85; }
+
+  .tryon-body { padding: 16px 20px; }
+  .canvas-wrap { position: relative; width: 100%; background: #f0e4ec; border-radius: var(--radius); overflow: hidden; border: 2px dashed var(--border); min-height: 320px; display: flex; align-items: center; justify-content: center; }
+  #tryonCanvas { display: none; width: 100%; }
+  .canvas-placeholder { text-align: center; padding: 32px 20px; }
+  .canvas-placeholder .icon { font-size: 52px; margin-bottom: 10px; }
+  .canvas-placeholder p { font-size: 13px; color: var(--muted); }
+
+  .upload-btn { width: 100%; background: var(--rose); color: #fff; border: none; border-radius: 50px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .upload-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  .tryon-wigs { margin-top: 20px; }
+  .tryon-wigs h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+  .wig-selector { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .wig-selector::-webkit-scrollbar { display: none; }
+  .wig-thumb { flex-shrink: 0; width: 70px; cursor: pointer; text-align: center; }
+  .wig-thumb .thumb-img { width: 70px; height: 70px; background: var(--rose-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 28px; border: 2.5px solid transparent; transition: border-color 0.2s; }
+  .wig-thumb.selected .thumb-img { border-color: var(--rose); }
+  .wig-thumb span { font-size: 10px; color: var(--muted); display: block; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .tryon-controls { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .control-row { display: flex; align-items: center; gap: 12px; }
+  .control-row label { font-size: 12px; font-weight: 600; color: var(--muted); min-width: 48px; }
+  .control-row input[type=range] { flex: 1; accent-color: var(--rose); }
+  .control-row span { font-size: 12px; color: var(--rose); font-weight: 700; min-width: 30px; text-align: right; }
+
+  .order-from-tryon { width: 100%; background: var(--rose); color: #fff; border: none; border-radius: 50px; padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 16px; }
+
+  /* ── order screen ── */
+  .order-header { background: var(--rose); color: #fff; padding: 28px 20px 20px; }
+  .order-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .order-header p { font-size: 13px; opacity: 0.85; }
+
+  .order-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+  .form-group input, .form-group select, .form-group textarea { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 14px; color: var(--text); font-family: inherit; outline: none; width: 100%; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--rose); }
+  .form-group textarea { resize: none; height: 90px; }
+
+  .order-summary { background: var(--rose-light); border-radius: var(--radius); padding: 14px 16px; border: 1px solid var(--border); }
+  .order-summary h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--rose-dark); }
+  .summary-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .summary-row.total { font-weight: 700; font-size: 15px; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 4px; color: var(--rose-dark); }
+
+  .contact-options { display: flex; flex-direction: column; gap: 10px; }
+  .contact-btn { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; text-decoration: none; color: var(--text); transition: border-color 0.2s; }
+  .contact-btn:hover { border-color: var(--rose); }
+  .contact-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .contact-icon.wa { background: #e8f5e9; }
+  .contact-icon.em { background: var(--rose-light); }
+  .contact-label strong { display: block; font-size: 14px; font-weight: 700; }
+  .contact-label span { font-size: 12px; color: var(--muted); }
+
+  .submit-order { width: 100%; background: var(--rose); color: #fff; border: none; border-radius: 50px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 4px; letter-spacing: 0.02em; }
+
+  /* ── success toast ── */
+  .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A1A2E; color: #fff; border-radius: 50px; padding: 12px 24px; font-size: 13px; font-weight: 600; z-index: 200; opacity: 0; transition: all 0.3s; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── detail modal ── */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 150; display: none; align-items: flex-end; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--bg); border-radius: var(--radius) var(--radius) 0 0; width: 100%; max-width: 430px; margin: 0 auto; padding: 20px; max-height: 85vh; overflow-y: auto; }
+  .modal-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-img { width: 100%; height: 220px; background: var(--rose-light); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 80px; margin-bottom: 16px; }
+  .modal-name { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .modal-type { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .modal-price { font-size: 24px; font-weight: 700; color: var(--rose); margin-bottom: 14px; }
+  .modal-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; }
+  .modal-try { flex: 1; background: var(--rose-light); color: var(--rose-dark); border: none; border-radius: 50px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .modal-order { flex: 1; background: var(--rose); color: #fff; border: none; border-radius: 50px; padding: 14px; font-size: 14px; font-weight: 700; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ══ HOME ══ -->
+<section class="screen active" id="screen-home">
+  <div class="hero">
+    <div class="hero-tag">Custom Wigs · Made to Order</div>
+    <h1>Your Crown,<br><span>Your Aura.</span></h1>
+    <p>Handcrafted wigs tailored to your style. Try before you buy.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="go('catalog')">Shop Wigs</button>
+      <button class="btn-outline" onclick="go('tryon')">Try On</button>
+    </div>
+  </div>
+
+  <div class="section-title">Browse by <span>Style</span></div>
+  <div class="pills">
+    <div class="pill active">All</div>
+    <div class="pill">Lace Front</div>
+    <div class="pill">Full Lace</div>
+    <div class="pill">Bob</div>
+    <div class="pill">Curly</div>
+    <div class="pill">Straight</div>
+  </div>
+
+  <div class="section-title">Featured <span>Pieces</span></div>
+  <div class="featured-scroll">
+    <div class="feat-card" onclick="openModal(0)">
+      <div class="feat-img">👸🏽</div>
+      <div class="feat-info">
+        <div class="feat-type">Lace Front</div>
+        <div class="feat-name">Silky Straight 28"</div>
+        <div class="feat-price">$185</div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="openModal(1)">
+      <div class="feat-img">💇🏾</div>
+      <div class="feat-info">
+        <div class="feat-type">Bob</div>
+        <div class="feat-name">Sleek Bob Unit</div>
+        <div class="feat-price">$145</div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="openModal(2)">
+      <div class="feat-img">🌀</div>
+      <div class="feat-info">
+        <div class="feat-type">Full Lace</div>
+        <div class="feat-name">Curly Goddess</div>
+        <div class="feat-price">$220</div>
+      </div>
+    </div>
+    <div class="feat-card" onclick="openModal(3)">
+      <div class="feat-img">✨</div>
+      <div class="feat-info">
+        <div class="feat-type">Lace Front</div>
+        <div class="feat-name">Body Wave Luxe</div>
+        <div class="feat-price">$195</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">How It <span>Works</span></div>
+  <div class="how">
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Browse the catalog</strong><span>Find a style that speaks to you</span></div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Try it on virtually</strong><span>Upload your photo and see the look</span></div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Place your order</strong><span>DM or email — we handle the rest</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CATALOG ══ -->
+<section class="screen" id="screen-catalog">
+  <div class="catalog-header">
+    <h2>All Wigs</h2>
+    <p>12 custom styles available · Made to order</p>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search styles..." oninput="filterWigs(this.value)">
+    </div>
+  </div>
+  <div class="pills" style="padding-top:14px;">
+    <div class="pill active" onclick="filterPill(this,'all')">All</div>
+    <div class="pill" onclick="filterPill(this,'lace front')">Lace Front</div>
+    <div class="pill" onclick="filterPill(this,'full lace')">Full Lace</div>
+    <div class="pill" onclick="filterPill(this,'bob')">Bob</div>
+    <div class="pill" onclick="filterPill(this,'curly')">Curly</div>
+  </div>
+  <div class="grid" id="wigGrid"></div>
+</section>
+
+<!-- ══ TRY ON ══ -->
+<section class="screen" id="screen-tryon">
+  <div class="tryon-header">
+    <h2>Virtual Try-On</h2>
+    <p>Upload a photo and wear any wig instantly</p>
+  </div>
+  <div class="tryon-body">
+    <div class="canvas-wrap" id="canvasWrap">
+      <div class="canvas-placeholder" id="canvasPlaceholder">
+        <div class="icon">📸</div>
+        <p>Upload a clear front-facing photo<br>to get started</p>
+      </div>
+      <canvas id="tryonCanvas"></canvas>
+    </div>
+
+    <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="loadPhoto(this)">
+    <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Upload Your Photo
+    </button>
+
+    <div class="tryon-wigs">
+      <h3>Pick a Wig to Try On</h3>
+      <div class="wig-selector" id="wigSelector"></div>
+    </div>
+
+    <div class="tryon-controls" id="tryonControls" style="display:none">
+      <div class="control-row">
+        <label>Size</label>
+        <input type="range" min="50" max="150" value="100" oninput="adjustWig('size',this.value);document.getElementById('sizeVal').textContent=this.value+'%'">
+        <span id="sizeVal">100%</span>
+      </div>
+      <div class="control-row">
+        <label>Up/Down</label>
+        <input type="range" min="-80" max="80" value="0" oninput="adjustWig('y',this.value);document.getElementById('yVal').textContent=this.value+'px'">
+        <span id="yVal">0px</span>
+      </div>
+      <div class="control-row">
+        <label>Left/Right</label>
+        <input type="range" min="-80" max="80" value="0" oninput="adjustWig('x',this.value);document.getElementById('xVal').textContent=this.value+'px'">
+        <span id="xVal">0px</span>
+      </div>
+    </div>
+
+    <button class="order-from-tryon" id="orderFromTryon" style="display:none" onclick="go('order')">
+      Love It — Order This Wig
+    </button>
+  </div>
+</section>
+
+<!-- ══ ORDER ══ -->
+<section class="screen" id="screen-order">
+  <div class="order-header">
+    <h2>Place an Order</h2>
+    <p>Fill in your details and we'll be in touch</p>
+  </div>
+  <div class="order-body">
+
+    <div class="order-summary" id="orderSummary">
+      <h4>Your Selection</h4>
+      <div class="summary-row"><span id="summaryName">No wig selected</span><span id="summaryType"></span></div>
+      <div class="summary-row total"><span>Estimated Total</span><span id="summaryPrice">—</span></div>
+    </div>
+
+    <div class="form-group">
+      <label>Wig Style</label>
+      <select id="orderWig" onchange="updateSummary(this.value)">
+        <option value="">— Select a style —</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Your Name</label>
+      <input type="text" placeholder="First and last name">
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" placeholder="your@email.com">
+    </div>
+
+    <div class="form-group">
+      <label>Phone (optional)</label>
+      <input type="tel" placeholder="+1 (555) 000-0000">
+    </div>
+
+    <div class="form-group">
+      <label>Custom Notes</label>
+      <textarea placeholder="Hair color, length, density, any special requests..."></textarea>
+    </div>
+
+    <div style="padding: 4px 0 2px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Reach Out Directly</div>
+      <div class="contact-options">
+        <a class="contact-btn" href="https://wa.me/17185550000?text=Hi%20Aura%20Wigs!%20I%27d%20like%20to%20place%20an%20order." target="_blank">
+          <div class="contact-icon wa">💬</div>
+          <div class="contact-label"><strong>WhatsApp</strong><span>Fastest response · Usually within 1 hr</span></div>
+        </a>
+        <a class="contact-btn" href="mailto:orders@aurawigs.com?subject=Wig Order Inquiry">
+          <div class="contact-icon em">✉️</div>
+          <div class="contact-label"><strong>Email</strong><span>orders@aurawigs.com</span></div>
+        </a>
+      </div>
+    </div>
+
+    <button class="submit-order" onclick="submitOrder()">Send Order Request</button>
+  </div>
+</section>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <button class="active" id="nav-home" onclick="go('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button id="nav-catalog" onclick="go('catalog')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Catalog
+  </button>
+  <button id="nav-tryon" onclick="go('tryon')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M3 21v-2a7 7 0 0 1 14 0v2"/></svg>
+    Try On
+  </button>
+  <button id="nav-order" onclick="go('order')">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+    Order
+  </button>
+</nav>
+
+<!-- ══ DETAIL MODAL ══ -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal" id="modalContent">
+    <div class="modal-handle"></div>
+    <div class="modal-img" id="modalImg"></div>
+    <div class="modal-name" id="modalName"></div>
+    <div class="modal-type" id="modalType"></div>
+    <div class="modal-price" id="modalPrice"></div>
+    <div class="modal-desc" id="modalDesc"></div>
+    <div class="modal-actions">
+      <button class="modal-try" onclick="tryFromModal()">Try On 👗</button>
+      <button class="modal-order" onclick="orderFromModal()">Order Now</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WIGS = [
+  { id:0, emoji:'👸🏽', name:'Silky Straight 28"', type:'Lace Front', price:185, badge:'Best Seller', desc:'Ultra-smooth silky straight unit, 28 inches of pure confidence. 180% density, pre-plucked hairline, baby hairs included. Available in natural black, 1B, and dark brown.' },
+  { id:1, emoji:'💇🏾', name:'Sleek Bob Unit', type:'Bob', price:145, badge:'', desc:'Clean, sharp bob that hits right at the jaw. Perfect for a bold, low-maintenance look. 13x4 lace front, bleached knots, glueless install.' },
+  { id:2, emoji:'🌀', name:'Curly Goddess', type:'Full Lace', price:220, badge:'New', desc:'Luscious 3C curl pattern on a full lace cap for maximum versatility. Wear it in a ponytail, half up, or fully down. Retains curl after washing.' },
+  { id:3, emoji:'✨', name:'Body Wave Luxe', type:'Lace Front', price:195, badge:'', desc:'Effortless body wave with natural movement and shine. 24 inches, 150% density. 13x6 lace frontal for a deep part anywhere.' },
+  { id:4, emoji:'🌸', name:'Pink Glam Wig', type:'Colored', price:210, badge:'Limited', desc:'Bold rose-pink fantasy unit that turns heads. Pre-colored, pre-styled. 20 inches, 150% density. Ready to wear out the box.' },
+  { id:5, emoji:'🖤', name:'Deep Wave Jet Black', type:'Full Lace', price:230, badge:'', desc:'Deep ocean wave pattern in rich jet black. Extremely natural look and feel. Full lace gives you unlimited styling options.' },
+  { id:6, emoji:'🍯', name:'Honey Blonde Bob', type:'Bob', price:175, badge:'', desc:'Warm honey blonde 613 color on a sleek bob. 12 inches, natural hairline, beginner-friendly install. Brightens any skin tone.' },
+  { id:7, emoji:'💫', name:'Kinky Straight', type:'Lace Front', price:165, badge:'', desc:'Textured kinky straight that mimics relaxed natural hair perfectly. Blends seamlessly with your edges. 18 inches, glueless.' },
+  { id:8, emoji:'🌊', name:'Deep Burgundy Wave', type:'Colored', price:200, badge:'', desc:'Rich burgundy deep wave — a statement color done right. 99J burgundy, 20 inches, 13x4 lace front, ready to impress.' },
+  { id:9, emoji:'👑', name:'Pixie Cut Unit', type:'Short', price:135, badge:'', desc:'Chic, sassy pixie cut wig for when you want a dramatic change without the commitment. Feathered edges, natural scalp appearance.' },
+  { id:10, emoji:'🌿', name:'Natural 4C Afro', type:'Full Lace', price:245, badge:'Premium', desc:'Celebrate your natural texture with this 4C afro unit. Hand-tied on a full lace cap, perfectly shaped, and full of volume.' },
+  { id:11, emoji:'🎀', name:'Jumbo Braid Wig', type:'Braided', price:155, badge:'', desc:'Pre-braided jumbo box braid wig — no salon time needed. Shoulder length, natural color options, lightweight and comfortable.' }
+];
+
+let currentFilter = 'all';
+let selectedWigIndex = 0;
+let modalWigId = 0;
+let tryonState = { photoLoaded: false, wigIndex: 0, size: 100, x: 0, y: 0 };
+let userImg = null;
+let wigImgs = {};
+
+function go(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  document.getElementById('nav-' + screen).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function renderGrid(wigs) {
+  const grid = document.getElementById('wigGrid');
+  grid.innerHTML = wigs.map(w => `
+    <div class="wig-card" onclick="openModal(${w.id})">
+      <div class="wig-emoji">
+        ${w.emoji}
+        ${w.badge ? `<div class="wig-badge">${w.badge}</div>` : ''}
+      </div>
+      <div class="wig-info">
+        <div class="wig-name">${w.name}</div>
+        <div class="wig-type">${w.type}</div>
+        <div class="wig-bottom">
+          <div class="wig-price">$${w.price}</div>
+          <button class="try-btn" onclick="event.stopPropagation();tryWig(${w.id})">Try On</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterWigs(q) {
+  const filtered = WIGS.filter(w =>
+    w.name.toLowerCase().includes(q.toLowerCase()) ||
+    w.type.toLowerCase().includes(q.toLowerCase())
+  );
+  renderGrid(filtered);
+}
+
+function filterPill(el, cat) {
+  document.querySelectorAll('#screen-catalog .pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = cat;
+  const filtered = cat === 'all' ? WIGS : WIGS.filter(w => w.type.toLowerCase().includes(cat));
+  renderGrid(filtered);
+}
+
+function openModal(id) {
+  const w = WIGS[id];
+  modalWigId = id;
+  document.getElementById('modalImg').textContent = w.emoji;
+  document.getElementById('modalName').textContent = w.name;
+  document.getElementById('modalType').textContent = w.type + (w.badge ? ' · ' + w.badge : '');
+  document.getElementById('modalPrice').textContent = '$' + w.price;
+  document.getElementById('modalDesc').textContent = w.desc;
+  document.getElementById('modalBackdrop').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalBackdrop')) {
+    document.getElementById('modalBackdrop').classList.remove('open');
+  }
+}
+
+function tryFromModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  tryWig(modalWigId);
+}
+
+function orderFromModal() {
+  document.getElementById('modalBackdrop').classList.remove('open');
+  selectedWigIndex = modalWigId;
+  updateOrderScreen(modalWigId);
+  go('order');
+}
+
+function tryWig(id) {
+  selectedWigIndex = id;
+  go('tryon');
+  document.querySelectorAll('.wig-thumb').forEach((t, i) => {
+    t.classList.toggle('selected', i === id);
+  });
+  tryonState.wigIndex = id;
+  if (tryonState.photoLoaded) drawCanvas();
+  showToast('Wig selected: ' + WIGS[id].name);
+}
+
+function renderWigSelector() {
+  const sel = document.getElementById('wigSelector');
+  sel.innerHTML = WIGS.map((w, i) => `
+    <div class="wig-thumb ${i === 0 ? 'selected' : ''}" onclick="selectTryonWig(${i})">
+      <div class="thumb-img">${w.emoji}</div>
+      <span>${w.name.split(' ').slice(0,2).join(' ')}</span>
+    </div>
+  `).join('');
+}
+
+function selectTryonWig(i) {
+  document.querySelectorAll('.wig-thumb').forEach((t, idx) => t.classList.toggle('selected', idx === i));
+  tryonState.wigIndex = i;
+  selectedWigIndex = i;
+  if (tryonState.photoLoaded) drawCanvas();
+}
+
+function loadPhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    userImg = new Image();
+    userImg.onload = function() {
+      tryonState.photoLoaded = true;
+      document.getElementById('canvasPlaceholder').style.display = 'none';
+      document.getElementById('tryonCanvas').style.display = 'block';
+      document.getElementById('tryonControls').style.display = 'flex';
+      document.getElementById('orderFromTryon').style.display = 'block';
+      drawCanvas();
+    };
+    userImg.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function drawCanvas() {
+  const canvas = document.getElementById('tryonCanvas');
+  const wrap = document.getElementById('canvasWrap');
+  const w = wrap.offsetWidth;
+  canvas.width = w;
+  const aspect = userImg.height / userImg.width;
+  canvas.height = w * aspect;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(userImg, 0, 0, canvas.width, canvas.height);
+
+  const wig = WIGS[tryonState.wigIndex];
+  const wigSize = (canvas.width * 0.6) * (tryonState.size / 100);
+  const cx = canvas.width / 2 + parseInt(tryonState.x);
+  const cy = canvas.height * 0.2 + parseInt(tryonState.y);
+
+  ctx.save();
+  ctx.font = wigSize + 'px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = 12;
+  ctx.fillText(wig.emoji, cx, cy);
+  ctx.restore();
+}
+
+function adjustWig(prop, val) {
+  tryonState[prop] = val;
+  if (tryonState.photoLoaded) drawCanvas();
+}
+
+function renderOrderSelect() {
+  const sel = document.getElementById('orderWig');
+  sel.innerHTML = '<option value="">— Select a style —</option>' +
+    WIGS.map(w => `<option value="${w.id}">${w.name} · $${w.price}</option>`).join('');
+}
+
+function updateOrderScreen(id) {
+  const sel = document.getElementById('orderWig');
+  sel.value = id;
+  updateSummary(id);
+}
+
+function updateSummary(id) {
+  if (id === '') {
+    document.getElementById('summaryName').textContent = 'No wig selected';
+    document.getElementById('summaryType').textContent = '';
+    document.getElementById('summaryPrice').textContent = '—';
+    return;
+  }
+  const w = WIGS[parseInt(id)];
+  document.getElementById('summaryName').textContent = w.name;
+  document.getElementById('summaryType').textContent = w.type;
+  document.getElementById('summaryPrice').textContent = '$' + w.price;
+}
+
+function submitOrder() {
+  showToast('✅ Order request sent! We\'ll be in touch soon.');
+  setTimeout(() => go('home'), 2000);
+}
+
+renderGrid(WIGS);
+renderWigSelector();
+renderOrderSelect();
+if (selectedWigIndex) updateOrderScreen(selectedWigIndex);
+</script>
+</body>
+</html>

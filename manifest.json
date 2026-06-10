@@ -1,0 +1,22 @@
+{
+  "name": "Aura Wigs",
+  "short_name": "Aura Wigs",
+  "description": "Custom wigs, made to order. Try before you buy.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8F9",
+  "theme_color": "#C2185B",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
